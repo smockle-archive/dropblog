@@ -1,0 +1,22 @@
+{
+  "name": "s3-to-github",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "all": "npm run _install && npm run build && npm run package",
+    "_install": "npm install -p .",
+    "build": "tsc -p tsconfig.json",
+    "package": "zip -r s3-to-github *"
+  },
+  "author": "Clay Miller <clay@smockle.com> (https://www.smockle.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.3.6",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.9.2",
+    "aws-sdk": "^2.265.1"
+  }
+}
