@@ -57,7 +57,7 @@ exports.handler = function (event) { return __awaiter(_this, void 0, void 0, fun
         switch (_b.label) {
             case 0:
                 bucketName = event.Records[0].s3.bucket.name;
-                filePath = event.Records[0].s3.key;
+                filePath = event.Records[0].s3.object.key;
                 _a = process.env, GITHUB_TOKEN = _a.GITHUB_TOKEN, GITHUB_USERNAME = _a.GITHUB_USERNAME, GITHUB_REPO = _a.GITHUB_REPO;
                 if (!GITHUB_TOKEN || !GITHUB_USERNAME || !GITHUB_REPO) {
                     throw new Error("Missing environment variables.");

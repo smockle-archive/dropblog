@@ -8,7 +8,7 @@ type LambdaEvent = {
   Records: {
     s3: {
       bucket: { name: string };
-      key: string;
+      object: { key: string };
     };
   }[];
 };
@@ -16,7 +16,7 @@ type LambdaEvent = {
 export const handler = async (event: LambdaEvent) => {
   // Get file details from 'event'
   const bucketName = event.Records[0].s3.bucket.name;
-  const filePath = event.Records[0].s3.key;
+  const filePath = event.Records[0].s3.object.key;
 
   // Authenticate with GitHub
   const { GITHUB_TOKEN, GITHUB_USERNAME, GITHUB_REPO } = process.env;
