@@ -61,8 +61,8 @@ export const handler = async (event: LambdaEvent) => {
         }
       ],
       base_tree: baseRef
-    })) as { data: { object: { sha: string } } };
-    const workingTreeRef = _.data.object.sha;
+    })) as { data: { sha: string } };
+    const workingTreeRef = _.data.sha;
 
     // Commit a git working tree
     _ = (await octokit.gitdata.createCommit({
@@ -70,8 +70,8 @@ export const handler = async (event: LambdaEvent) => {
       message: `Updated ${filePath}`,
       tree: workingTreeRef,
       parents: [baseRef]
-    })) as { data: { object: { sha: string } } };
-    const commitRef = _.data.object.sha;
+    })) as { data: { sha: string } };
+    const commitRef = _.data.sha;
 
     // Push commit ref to git repository
     return await octokit.gitdata.updateReference({

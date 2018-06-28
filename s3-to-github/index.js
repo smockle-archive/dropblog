@@ -95,11 +95,11 @@ exports.handler = function (event) { return __awaiter(_this, void 0, void 0, fun
                         ], base_tree: baseRef }))];
             case 4:
                 _ = (_b.sent());
-                workingTreeRef = _.data.object.sha;
+                workingTreeRef = _.data.sha;
                 return [4, octokit.gitdata.createCommit(__assign({}, githubIdentifiers, { message: "Updated " + filePath, tree: workingTreeRef, parents: [baseRef] }))];
             case 5:
                 _ = (_b.sent());
-                commitRef = _.data.object.sha;
+                commitRef = _.data.sha;
                 return [4, octokit.gitdata.updateReference(__assign({}, githubIdentifiers, { ref: "heads/master", sha: commitRef, force: true }))];
             case 6: return [2, _b.sent()];
             case 7:
