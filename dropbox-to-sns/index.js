@@ -43,18 +43,18 @@ var aws_sdk_1 = __importDefault(require("aws-sdk"));
 var crypto_1 = require("crypto");
 var sns = new aws_sdk_1.default.SNS();
 exports.handler = function (event) { return __awaiter(_this, void 0, void 0, function () {
-    var rawBody, XDropboxSignature, _a, DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN, error_1;
+    var body, XDropboxSignature, _a, DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                rawBody = new Buffer(event.rawBody);
+                body = new Buffer(event.body);
                 XDropboxSignature = event.headers["X-Dropbox-Signature"];
                 _a = process.env, DROPBOX_APP_SECRET = _a.DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN = _a.AWS_SNS_TOPIC_ARN;
                 if (!DROPBOX_APP_SECRET || !AWS_SNS_TOPIC_ARN) {
                     throw new Error("Missing environment variable");
                 }
                 if (crypto_1.createHmac("sha256", DROPBOX_APP_SECRET)
-                    .update(rawBody)
+                    .update(body)
                     .digest("hex") != XDropboxSignature) {
                     throw new Error("Invalid X-Dropbox-Signature");
                 }

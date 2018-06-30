@@ -7,12 +7,12 @@ type LambdaEvent = {
   headers: {
     "X-Dropbox-Signature": string;
   };
-  rawBody: string;
+  body: string;
 };
 
 export const handler = async (event: LambdaEvent) => {
   // Get request details from 'event'
-  const rawBody = new Buffer(event.rawBody);
+  const body = new Buffer(event.body);
   const XDropboxSignature = event.headers["X-Dropbox-Signature"];
 
   // Verify environment
@@ -24,7 +24,7 @@ export const handler = async (event: LambdaEvent) => {
   // Make sure this is a valid request from Dropbox
   if (
     createHmac("sha256", DROPBOX_APP_SECRET)
-      .update(rawBody)
+      .update(body)
       .digest("hex") != XDropboxSignature
   ) {
     throw new Error("Invalid X-Dropbox-Signature");
