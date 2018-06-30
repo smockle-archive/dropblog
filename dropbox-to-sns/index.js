@@ -47,8 +47,7 @@ exports.handler = function (event) { return __awaiter(_this, void 0, void 0, fun
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                console.log(JSON.stringify(event));
-                body = event.body;
+                body = JSON.stringify(event.body);
                 XDropboxSignature = event.headers["X-Dropbox-Signature"];
                 _a = process.env, DROPBOX_APP_SECRET = _a.DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN = _a.AWS_SNS_TOPIC_ARN;
                 if (!DROPBOX_APP_SECRET || !AWS_SNS_TOPIC_ARN) {

@@ -7,13 +7,19 @@ type LambdaEvent = {
   headers: {
     "X-Dropbox-Signature": string;
   };
-  body: string;
+  body: {
+    list_folder: {
+      accounts: string[];
+    };
+    delta: {
+      users: number[];
+    };
+  };
 };
 
 export const handler = async (event: LambdaEvent) => {
   // Get request details from 'event'
-  console.log(JSON.stringify(event));
-  const body = event.body;
+  const body = JSON.stringify(event.body);
   const XDropboxSignature = event.headers["X-Dropbox-Signature"];
 
   // Verify environment
