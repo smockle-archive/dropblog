@@ -16,8 +16,8 @@ export const handler = async (event: LambdaEvent) => {
   const XDropboxSignature = event.headers["X-Dropbox-Signature"];
 
   // Verify environment
-  const { DROPBOX_APP_SECRET, AWS_SNS_ARN } = process.env;
-  if (!DROPBOX_APP_SECRET || !AWS_SNS_ARN) {
+  const { DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN } = process.env;
+  if (!DROPBOX_APP_SECRET || !AWS_SNS_TOPIC_ARN) {
     throw new Error("Missing environment variable");
   }
 
@@ -32,7 +32,7 @@ export const handler = async (event: LambdaEvent) => {
 
   try {
     return await sns.publish({
-      TopicArn: AWS_SNS_ARN,
+      TopicArn: AWS_SNS_TOPIC_ARN,
       Message: "Files were modified in Dropbox"
     });
   } catch (error) {
