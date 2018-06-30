@@ -43,18 +43,18 @@ var aws_sdk_1 = __importDefault(require("aws-sdk"));
 var crypto_1 = require("crypto");
 var sns = new aws_sdk_1.default.SNS();
 exports.handler = function (event) { return __awaiter(_this, void 0, void 0, function () {
-    var body, XDropboxSignature, _a, DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN, error_1;
+    var rawBody, XDropboxSignature, _a, DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                body = JSON.stringify(event.body);
-                XDropboxSignature = event.headers["X-Dropbox-Signature"];
+                rawBody = event.rawBody;
+                XDropboxSignature = event.params.header["X-Dropbox-Signature"];
                 _a = process.env, DROPBOX_APP_SECRET = _a.DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN = _a.AWS_SNS_TOPIC_ARN;
                 if (!DROPBOX_APP_SECRET || !AWS_SNS_TOPIC_ARN) {
                     throw new Error("Missing environment variable");
                 }
                 if (crypto_1.createHmac("sha256", DROPBOX_APP_SECRET)
-                    .update(body)
+                    .update(rawBody)
                     .digest("hex") != XDropboxSignature) {
                     throw new Error("Invalid X-Dropbox-Signature");
                 }
@@ -65,7 +65,12 @@ exports.handler = function (event) { return __awaiter(_this, void 0, void 0, fun
                         TopicArn: AWS_SNS_TOPIC_ARN,
                         Message: "Files were modified in Dropbox"
                     })];
-            case 2: return [2, _b.sent()];
+            case 2:
+                _b.sent();
+                return [2, {
+                        statusCode: 200,
+                        body: "Message sent"
+                    }];
             case 3:
                 error_1 = _b.sent();
                 throw error_1;

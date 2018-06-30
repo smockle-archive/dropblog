@@ -4,23 +4,18 @@ import { createHmac } from "crypto";
 const sns = new AWS.SNS();
 
 type LambdaEvent = {
-  headers: {
-    "X-Dropbox-Signature": string;
-  };
-  body: {
-    list_folder: {
-      accounts: string[];
-    };
-    delta: {
-      users: number[];
+  params: {
+    header: {
+      "X-Dropbox-Signature": string;
     };
   };
+  rawBody: string;
 };
 
 export const handler = async (event: LambdaEvent) => {
   // Get request details from 'event'
-  const body = JSON.stringify(event.body);
-  const XDropboxSignature = event.headers["X-Dropbox-Signature"];
+  const rawBody = event.rawBody;
+  const XDropboxSignature = event.params.header["X-Dropbox-Signature"];
 
   // Verify environment
   const { DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN } = process.env;
@@ -31,17 +26,21 @@ export const handler = async (event: LambdaEvent) => {
   // Make sure this is a valid request from Dropbox
   if (
     createHmac("sha256", DROPBOX_APP_SECRET)
-      .update(body)
+      .update(rawBody)
       .digest("hex") != XDropboxSignature
   ) {
     throw new Error("Invalid X-Dropbox-Signature");
   }
 
   try {
-    return await sns.publish({
+    await sns.publish({
       TopicArn: AWS_SNS_TOPIC_ARN,
       Message: "Files were modified in Dropbox"
     });
+    return {
+      statusCode: 200,
+      body: "Message sent"
+    };
   } catch (error) {
     throw error;
   }
