@@ -1,5 +1,14 @@
-node_modules
-*.zip
+# General
 *.log
 .env
 .DS_Store
+
+# JavaScript
+node_modules
+
+# TypeScript
+*.js
+
+# AWS
+*.zip
+swagger.yaml

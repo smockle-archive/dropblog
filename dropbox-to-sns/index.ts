@@ -4,18 +4,16 @@ import { createHmac } from "crypto";
 const sns = new AWS.SNS();
 
 type LambdaEvent = {
-  params: {
-    header: {
-      "X-Dropbox-Signature": string;
-    };
+  headers: {
+    "X-Dropbox-Signature": string;
   };
   rawBody: string;
 };
 
 export const handler = async (event: LambdaEvent) => {
   // Get request details from 'event'
+  const XDropboxSignature = event.headers["X-Dropbox-Signature"];
   const rawBody = event.rawBody;
-  const XDropboxSignature = event.params.header["X-Dropbox-Signature"];
 
   // Verify environment
   const { DROPBOX_APP_SECRET, AWS_SNS_TOPIC_ARN } = process.env;
