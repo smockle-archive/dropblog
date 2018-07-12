@@ -24,12 +24,14 @@ type SNSEvent = {
 export const handler = async (event: SNSEvent) => {
   // Verify environment
   const {
+    DROPBOX_USER_ID,
     DROPBOX_USER_TOKEN,
     AWS_SNS_TOPIC_ARN,
     AWS_S3_BUCKET_NAME,
     AWS_DYNAMODB_TABLE_NAME
   } = process.env;
   if (
+    !DROPBOX_USER_ID ||
     !DROPBOX_USER_TOKEN ||
     !AWS_SNS_TOPIC_ARN ||
     !AWS_S3_BUCKET_NAME ||
@@ -53,13 +55,14 @@ export const handler = async (event: SNSEvent) => {
       .getItem({
         TableName: AWS_DYNAMODB_TABLE_NAME,
         Key: {
-          ID: { S: "dropboxuserid" }
+          ID: { S: DROPBOX_USER_ID }
         },
-        ProjectionExpression: "CURSOR"
+        ProjectionExpression: "DROPBOXCURSOR"
       })
       .promise();
     const previousCursor =
-      (dynamoItem && dynamoItem.CURSOR && dynamoItem.CURSOR.S) || null;
+      (dynamoItem && dynamoItem.DROPBOXCURSOR && dynamoItem.DROPBOXCURSOR.S) ||
+      null;
 
     // Get files from Dropbox
     let cursor: DropboxTypes.files.ListFolderCursor | null = null;
@@ -115,8 +118,8 @@ export const handler = async (event: SNSEvent) => {
         .putItem({
           TableName: AWS_DYNAMODB_TABLE_NAME,
           Item: {
-            ID: { S: "dropboxuserid" },
-            CURSOR: { S: cursor }
+            ID: { S: DROPBOX_USER_ID },
+            DROPBOXCURSOR: { S: cursor }
           }
         })
         .promise();
