@@ -72,13 +72,13 @@ export const handler = async (event: SNSEvent) => {
     // Call /files/list_folder for the given user ID and process any changes
     while (hasMore) {
       console.log("Continuing to list files");
-      const listFolderResult = await (async () => {
+      const listFolderResult = await (() => {
         if (!cursor) {
           console.log("No Dropbox cursor available");
-          return await dropbox.filesListFolder({ path: "" });
+          return dropbox.filesListFolder({ path: "" });
         } else {
           console.log(`Continuing from Dropbox cursor '${cursor}'`);
-          return await dropbox.filesListFolderContinue({ cursor });
+          return dropbox.filesListFolderContinue({ cursor });
         }
       })();
       listFolderResult.entries.forEach(async entry => {
