@@ -29,8 +29,10 @@ export const handler = async (event: LambdaEvent) => {
   ) {
     throw new Error("Invalid X-Dropbox-Signature");
   }
+  console.log("Received a valid request from Dropbox");
 
   try {
+    console.log("Publishing notification to SNS");
     await sns.publish({
       TopicArn: AWS_SNS_TOPIC_ARN,
       Message: "Files were modified in Dropbox"

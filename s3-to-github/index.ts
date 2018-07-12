@@ -36,6 +36,7 @@ export const handler = async (event: LambdaEvent) => {
     let _;
 
     // Read contents of a file stored in an S3 bucket
+    console.log(`Reading file '${filePath}' from S3`);
     _ = await s3.getObject({ Bucket: bucketName, Key: filePath }).promise();
     const fileContents = _ && _.Body ? _.Body.toString() : null;
     if (fileContents === null) {
@@ -43,6 +44,7 @@ export const handler = async (event: LambdaEvent) => {
     }
 
     // Get the hash of the latest commit to a repo’s 'master' branch
+    console.log("Getting the lastest commit in repository");
     _ = (await octokit.gitdata.getReference({
       ...githubIdentifiers,
       ref: "heads/master"
@@ -50,6 +52,7 @@ export const handler = async (event: LambdaEvent) => {
     const baseRef = _.data.object.sha;
 
     // Add a file to a git repository working tree.
+    console.log("Adding file to working tree");
     _ = (await octokit.gitdata.createTree({
       ...githubIdentifiers,
       tree: [
@@ -65,6 +68,7 @@ export const handler = async (event: LambdaEvent) => {
     const workingTreeRef = _.data.sha;
 
     // Commit a git working tree
+    console.log("Committing working tree");
     _ = (await octokit.gitdata.createCommit({
       ...githubIdentifiers,
       message: `Updated ${filePath}`,
@@ -74,6 +78,7 @@ export const handler = async (event: LambdaEvent) => {
     const commitRef = _.data.sha;
 
     // Push commit ref to git repository
+    console.log("Pushing commit to repository");
     return await octokit.gitdata.updateReference({
       ...githubIdentifiers,
       ref: "heads/master",
