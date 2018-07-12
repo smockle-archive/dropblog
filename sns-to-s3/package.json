@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.265.1",
-    "dropbox": "4.0.4"
+    "dropbox": "4.0.4",
+    "isomorphic-fetch": "^2.2.1"
   }
 }

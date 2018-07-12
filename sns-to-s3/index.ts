@@ -1,4 +1,5 @@
 import AWS from "aws-sdk";
+import "isomorphic-fetch"; // required for 'dropbox' module
 import { Dropbox } from "dropbox";
 
 const s3 = new AWS.S3();
@@ -55,28 +56,29 @@ export const handler = async (event: SNSEvent) => {
       .getItem({
         TableName: AWS_DYNAMODB_TABLE_NAME,
         Key: {
-          ID: { S: DROPBOX_USER_ID }
+          id: { S: DROPBOX_USER_ID }
         },
-        ProjectionExpression: "DROPBOXCURSOR"
+        ProjectionExpression: "dropboxCursor"
       })
       .promise();
     const previousCursor =
-      (dynamoItem && dynamoItem.DROPBOXCURSOR && dynamoItem.DROPBOXCURSOR.S) ||
+      (dynamoItem && dynamoItem.dropboxCursor && dynamoItem.dropboxCursor.S) ||
       null;
 
     // Get files from Dropbox
-    let cursor: DropboxTypes.files.ListFolderCursor | null = null;
+    let cursor: DropboxTypes.files.ListFolderCursor | null = previousCursor;
     let hasMore = true;
 
     // Call /files/list_folder for the given user ID and process any changes
     while (hasMore) {
+      console.log("Continuing to list files");
       const listFolderResult = await (async () => {
-        if (!previousCursor) {
+        if (!cursor) {
+          console.log("No Dropbox cursor available");
           return await dropbox.filesListFolder({ path: "" });
         } else {
-          return await dropbox.filesListFolderContinue({
-            cursor: previousCursor
-          });
+          console.log(`Continuing from Dropbox cursor '${cursor}'`);
+          return await dropbox.filesListFolderContinue({ cursor });
         }
       })();
       listFolderResult.entries.forEach(async entry => {
@@ -87,6 +89,7 @@ export const handler = async (event: SNSEvent) => {
           !entry.path_lower ||
           !entry.path_lower.endsWith(".md")
         ) {
+          console.log("Skipping deleted file, folder or non-markdown file");
           return;
         }
         // Download file metadata
@@ -95,9 +98,11 @@ export const handler = async (event: SNSEvent) => {
         } = await dropbox.filesDownload({ path: entry.path_lower });
         // Verify file metatdata
         if (!file.path_lower || !file.fileBinary) {
+          console.log("Skipping file with invalid metadata");
           return;
         }
         // Upload file to S3
+        console.log(`Uploading file '${file.path_lower}' to S3`);
         await s3
           .putObject({
             Bucket: AWS_S3_BUCKET_NAME,
@@ -114,12 +119,13 @@ export const handler = async (event: SNSEvent) => {
 
     // Update cursor in DynamoDB
     if (cursor) {
+      console.log(`Storing cursor '${cursor}' in DynamoDB`);
       await dynamoDB
         .putItem({
           TableName: AWS_DYNAMODB_TABLE_NAME,
           Item: {
-            ID: { S: DROPBOX_USER_ID },
-            DROPBOXCURSOR: { S: cursor }
+            id: { S: DROPBOX_USER_ID },
+            dropboxCursor: { S: cursor }
           }
         })
         .promise();
