@@ -75,7 +75,7 @@ export const handler = async (event: SNSEvent) => {
       const listFolderResult = await (() => {
         if (!cursor) {
           console.log("No Dropbox cursor available");
-          return dropbox.filesListFolder({ path: "" });
+          return dropbox.filesListFolder({ path: "", recursive: true });
         } else {
           console.log(`Continuing from Dropbox cursor '${cursor}'`);
           return dropbox.filesListFolderContinue({ cursor });
