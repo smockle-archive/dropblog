@@ -87,7 +87,7 @@ export const handler = async (event: SNSEvent) => {
           listFolderResult
         )}'`
       );
-      listFolderResult.entries.forEach(async entry => {
+      for (const entry of listFolderResult.entries) {
         // Ignore deleted files, folders, and non-markdown files
         if (
           entry[".tag"] === "deleted" ||
@@ -100,7 +100,7 @@ export const handler = async (event: SNSEvent) => {
               entry.path_lower
             }'`
           );
-          return;
+          continue;
         }
         // Download file metadata
         const file: DropboxTypes.files.FileMetadata & {
@@ -109,18 +109,19 @@ export const handler = async (event: SNSEvent) => {
         // Verify file metatdata
         if (!file.path_lower || !file.fileBinary) {
           console.log("Skipping file with invalid metadata");
-          return;
+          continue;
         }
         // Upload file to S3
         console.log(`Uploading file '${file.path_lower}' to S3`);
         await s3
           .putObject({
             Bucket: AWS_S3_BUCKET_NAME,
-            Key: file.path_lower,
+            Key: file.path_lower.replace(/^\//, ""),
             Body: file.fileBinary
           })
           .promise();
-      });
+        continue;
+      }
       // Update cursor
       cursor = listFolderResult.cursor;
       // Repeat only if there's more to do
