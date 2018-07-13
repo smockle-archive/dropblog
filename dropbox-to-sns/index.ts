@@ -33,10 +33,12 @@ export const handler = async (event: LambdaEvent) => {
 
   try {
     console.log("Publishing notification to SNS");
-    await sns.publish({
-      TopicArn: AWS_SNS_TOPIC_ARN,
-      Message: "Files were modified in Dropbox"
-    });
+    await sns
+      .publish({
+        TopicArn: AWS_SNS_TOPIC_ARN,
+        Message: "Files were modified in Dropbox"
+      })
+      .promise();
     return {
       statusCode: 200,
       body: "Message sent"

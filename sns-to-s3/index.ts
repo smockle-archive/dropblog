@@ -81,6 +81,12 @@ export const handler = async (event: SNSEvent) => {
           return dropbox.filesListFolderContinue({ cursor });
         }
       })();
+
+      console.log(
+        `Received response from Dropbox API: '${JSON.stringify(
+          listFolderResult
+        )}'`
+      );
       listFolderResult.entries.forEach(async entry => {
         // Ignore deleted files, folders, and non-markdown files
         if (
@@ -89,7 +95,11 @@ export const handler = async (event: SNSEvent) => {
           !entry.path_lower ||
           !entry.path_lower.endsWith(".md")
         ) {
-          console.log("Skipping deleted file, folder or non-markdown file");
+          console.log(
+            `Skipping deleted file, folder or non-markdown file '${
+              entry.path_lower
+            }'`
+          );
           return;
         }
         // Download file metadata
