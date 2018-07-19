@@ -44,32 +44,22 @@ export const handler = async (event: LambdaEvent) => {
     const baseRef = _.data.object.sha;
 
     // Get a hash of the file to delete.
-    console.log("Getting a hash of the file to delete");
+    console.log(`Getting a hash of file ${filePath}`);
     _ = (await octokit.repos.getContent({
       ...githubIdentifiers,
       path: filePath
     })) as { data: { sha: string } };
     const fileSha = _.data.sha;
 
-    // Remove a file from a git repository working tree.
-    console.log("Removing file from working tree");
+    // Remove a file from a git repository working tree and commit.
+    console.log("Removing file from working tree and committing");
     _ = (await octokit.repos.deleteFile({
       ...githubIdentifiers,
       path: filePath,
       message: `Deleted ${filePath}`,
       sha: fileSha
     })) as { data: { commit: { sha: string } } };
-    const workingTreeRef = _.data.commit.sha;
-
-    // Commit a git working tree
-    console.log("Committing working tree");
-    _ = (await octokit.gitdata.createCommit({
-      ...githubIdentifiers,
-      message: `Deleted ${filePath}`,
-      tree: workingTreeRef,
-      parents: [baseRef]
-    })) as { data: { sha: string } };
-    const commitRef = _.data.sha;
+    const commitRef = _.data.commit.sha;
 
     // Push commit ref to git repository
     console.log("Pushing commit to repository");
