@@ -88,18 +88,26 @@ export const handler = async (event: SNSEvent) => {
         )}'`
       );
       for (const entry of listFolderResult.entries) {
-        // Ignore deleted files, folders, and non-markdown files
+        // Ignore folders, and non-markdown files
         if (
-          entry[".tag"] === "deleted" ||
           entry[".tag"] === "folder" ||
           !entry.path_lower ||
           !entry.path_lower.endsWith(".md")
         ) {
           console.log(
-            `Skipping deleted file, folder or non-markdown file '${
-              entry.path_lower
-            }'`
+            `Skipping folder or non-markdown file '${entry.path_lower}'`
           );
+          continue;
+        }
+        if (entry[".tag"] === "deleted") {
+          // Delete file from S3
+          console.log(`Deleting file '${entry.path_lower}' from S3`);
+          await s3
+            .deleteObject({
+              Bucket: AWS_S3_BUCKET_NAME,
+              Key: entry.path_lower.replace(/^\//, "")
+            })
+            .promise();
           continue;
         }
         // Download file metadata

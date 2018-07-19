@@ -1,5 +1,5 @@
 {
-  "name": "s3-to-github",
+  "name": "delete-s3-to-github",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "all": "npm run _install && npm run build && npm run package",
     "_install": "npm install -p .",
     "build": "tsc -p tsconfig.json",
-    "package": "zip -r s3-to-github *"
+    "package": "zip -r delete-s3-to-github *"
   },
   "author": "Clay Miller <clay@smockle.com> (https://www.smockle.com/)",
   "license": "MIT",
