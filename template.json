@@ -1,0 +1,69 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Dropblog: Syncs Markdown files from Dropbox to GitHub",
+  "Parameters": {
+    "AwsAccountId": {
+      "Type": "String"
+    },
+    "AwsRegion": {
+      "Type": "String"
+    },
+    "AwsSnsTopicArn": {
+      "Type": "String"
+    },
+    "DropboxAppSecret": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "ApiGatewayApi": {
+      "Type": "AWS::Serverless::Api",
+      "Properties": {
+        "DefinitionUri": "swagger.json",
+        "StageName": "v1",
+        "Variables": {
+          "AwsRegion": "AwsRegion",
+          "DropboxToSnsFunction": "DropboxToSnsFunction"
+        }
+      }
+    },
+    "DropboxToSnsFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "dropbox-to-sns/",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "AWS_SNS_TOPIC_ARN": "AwsSnsTopicArn",
+            "DROPBOX_APP_SECRET": "DropboxAppSecret"
+          }
+        },
+        "Events": {
+          "ApiGatewayApi": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "post"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ApiGatewayApi": {
+      "Description": "API Gateway endpoint URL for v1 stage",
+      "Value": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/v1/"
+    },
+    "DropboxToSnsFunction": {
+      "Description": "Dropbox to SNS Lambda Function ARN",
+      "Value": "DropboxToSnsFunction.Arn"
+    },
+    "DropboxToSnsFunctionIamRole": {
+      "Description": "Implicit IAM Role created for Dropbox to SNS Function",
+      "Value": "DropboxToSnsFunctionRole.Arn"
+    }
+  }
+}
