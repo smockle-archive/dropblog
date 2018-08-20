@@ -12,7 +12,7 @@ script:
   - sam validate --template template.json
 deploy:
   provider: script
-  script: deploy.sh
+  script: ./deploy.sh
   skip_cleanup: true
   on:
     branch: master
