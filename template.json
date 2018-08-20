@@ -12,7 +12,7 @@
       "Type": "AWS::Serverless::Api",
       "Properties": {
         "StageName": "v1",
-        "Body": {
+        "DefinitionBody": {
           "swagger": "2.0",
           "info": {
             "description": "Syncs Markdown files from Dropbox to GitHub",
