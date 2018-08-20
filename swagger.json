@@ -75,7 +75,7 @@
           }
         },
         "x-amazon-apigateway-integration": {
-          "uri": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.DropboxToSnsFunction}/invocations",
+          "uri": "${stageVariables.URI}",
           "responses": {
             "default": {
               "statusCode": "200"
