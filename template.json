@@ -128,11 +128,11 @@
           }
         },
         "Events": {
-          "DeleteObjectS3Bucket": {
+          "RemoveObjectS3Bucket": {
             "Type": "S3",
             "Properties": {
               "Bucket": { "Ref": "S3Bucket" },
-              "Events": "s3:ObjectDeleted:*"
+              "Events": "s3:ObjectRemoved:*"
             }
           }
         }
