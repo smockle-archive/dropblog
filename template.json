@@ -11,7 +11,7 @@
     "ApiGatewayApi": {
       "Type": "AWS::Serverless::Api",
       "Properties": {
-        "StageName": "v1",
+        "StageName": "Prod",
         "DefinitionBody": {
           "swagger": "2.0",
           "info": {
