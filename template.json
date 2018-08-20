@@ -116,13 +116,13 @@
       "Type": "AWS::DynamoDB::Table",
       "AttributeDefinitions": [
         {
-          "AttributeName": "id",
+          "AttributeName": "userId",
           "AttributeType": "S"
         }
       ],
       "KeySchema": [
         {
-          "AttributeName": "id",
+          "AttributeName": "userId",
           "KeyType": "HASH"
         }
       ],
