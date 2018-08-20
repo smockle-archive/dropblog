@@ -1,0 +1,103 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Syncs Markdown files from Dropbox to GitHub",
+    "version": "1.0.0",
+    "title": "Dropblog"
+  },
+  "schemes": ["https"],
+  "paths": {
+    "/": {
+      "get": {
+        "consumes": ["application/json"],
+        "produces": ["text/plain"],
+        "parameters": [
+          {
+            "name": "challenge",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "X-Content-Type-Options": {
+                "type": "string"
+              },
+              "Content-Type": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "'text/plain'",
+                "method.response.header.X-Content-Type-Options": "'nosniff'"
+              },
+              "responseTemplates": {
+                "text/plain": "$input.params('challenge')"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      },
+      "post": {
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "X-Dropbox-Signature",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DropboxToSnsFunction}/invocations"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\n    \"headers\": {\n        #set($headers = $input.params().get('header'))\n        #foreach($header in $headers.keySet())\n            \"$header\": \"$util.escapeJavaScript($headers.get($header))\"\n            #if($foreach.hasNext),#end\n        #end\n    },\n    \"rawBody\": \"$util.escapeJavaScript($input.body).replace(\"\\'\", \"'\")\"\n}"
+          },
+          "passthroughBehavior": "when_no_templates",
+          "httpMethod": "POST",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Empty": {
+      "type": "object",
+      "title": "Empty Schema"
+    }
+  }
+}

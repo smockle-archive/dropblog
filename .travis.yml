@@ -12,7 +12,7 @@ script:
   - sam validate --template template.json
 deploy:
   provider: script
-  script: sam package --template-file template.json --s3-bucket "$AWS_S3_BUCKET_NAME" --output-template-file packaged.yaml && sam deploy --template-file packaged.yaml --parameter-overrides DropboxAppSecret="$DROPBOX_APP_SECRET" --capabilities CAPABILITY_IAM --stack-name dropblog
+  script: deploy.sh
   skip_cleanup: true
   on:
     branch: master
