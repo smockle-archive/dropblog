@@ -8,6 +8,21 @@
     },
     "DropboxAppSecret": {
       "Type": "String"
+    },
+    "DropboxUserId": {
+      "Type": "String"
+    },
+    "DropboxUserToken": {
+      "Type": "String"
+    },
+    "GitHubToken": {
+      "Type": "String"
+    },
+    "GitHubUsername": {
+      "Type": "String"
+    },
+    "GitHubRepo": {
+      "Type": "String"
     }
   },
   "Resources": {
@@ -30,7 +45,7 @@
     "DropboxToSnsFunction": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "CodeUri": "dropbox-to-sns/",
+        "CodeUri": "dropbox-to-sns/dropbox-to-sns.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
         "Environment": {
@@ -50,22 +65,87 @@
         }
       }
     },
+    "SnsToS3Function": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "sns-to-s3/sns-to-s3.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "AWS_DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
+            "AWS_S3_BUCKET_NAME": { "Ref": "S3Bucket" },
+            "AWS_SNS_TOPIC_ARN": { "Ref": "SnsTopic" },
+            "DROPBOX_USER_ID": { "Ref": "DropboxUserId" },
+            "DROPBOX_USER_TOKEN": { "Ref": "DropboxUserToken" }
+          }
+        }
+      }
+    },
+    "CreateS3ToGitHubFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "GITHUB_TOKEN": { "Ref": "GitHubToken" },
+            "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
+            "GITHUB_REPO": { "Ref": "GitHubRepo" }
+          }
+        }
+      }
+    },
+    "DeleteS3ToGitHubFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "GITHUB_TOKEN": { "Ref": "GitHubToken" },
+            "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
+            "GITHUB_REPO": { "Ref": "GitHubRepo" }
+          }
+        }
+      }
+    },
+    "DynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "AttributeDefinitions": [
+        {
+          "AttributeName": "id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "dropboxCursor",
+          "AttributeType": "S"
+        }
+      ],
+      "KeySchema": {
+        "AttributeName": "id",
+        "KeyType": "HASH"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
     "SnsTopic": {
       "Type": "AWS::SNS::Topic"
+    },
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket"
     }
   },
   "Outputs": {
     "ApiGatewayApi": {
-      "Description": "API Gateway endpoint URL for v1 stage",
-      "Value": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/v1/"
-    },
-    "DropboxToSnsFunction": {
-      "Description": "Dropbox to SNS Lambda Function ARN",
-      "Value": "DropboxToSnsFunction.Arn"
-    },
-    "DropboxToSnsFunctionIamRole": {
-      "Description": "Implicit IAM Role created for Dropbox to SNS Function",
-      "Value": "DropboxToSnsFunctionRole.Arn"
+      "Description": "API Gateway endpoint URL for Prod stage",
+      "Value": {
+        "Fn::Sub": "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
     }
   }
 }

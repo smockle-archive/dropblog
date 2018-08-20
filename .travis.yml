@@ -4,15 +4,16 @@ node_js:
 notifications:
   email:
     on_success: change
-    on_failure: always
+    on_failure: change
 before_install:
   - pip install --user awscli
   - pip install --user aws-sam-cli
 script:
   - sam validate --template template.json
+  - ./scripts/build.sh
 deploy:
   provider: script
-  script: ./deploy.sh
+  script: ./scripts/deploy.sh
   skip_cleanup: true
   on:
     branch: master
