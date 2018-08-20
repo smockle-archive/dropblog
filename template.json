@@ -17,7 +17,7 @@
           "info": {
             "description": "Syncs Markdown files from Dropbox to GitHub",
             "version": "1.0.0",
-            "title": { "Fn::Sub": "dropblog-${ApiGatewayApi}" }
+            "title": "Dropblog"
           },
           "schemes": ["https"],
           "paths": {
