@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "8"
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+before_install:
+  - pip install --user awscli
+  - pip install --user aws-sam-cli
+script:
+  - sam validate --template template.json
+deploy:
+  provider: script
+  script: sam package --template-file template.json --s3-bucket "$AWS_S3_BUCKET_NAME" --output-template-file packaged.yaml && sam deploy --template-file packaged.yaml --parameter-overrides DropboxAppSecret="$DROPBOX_APP_SECRET" --capabilities CAPABILITY_IAM --stack-name dropblog
+  skip_cleanup: true
+  on:
+    branch: master

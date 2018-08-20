@@ -75,7 +75,7 @@
           }
         },
         "x-amazon-apigateway-integration": {
-          "uri": "arn:aws:apigateway:${stageVariables.AwsRegion}:lambda:path/2015-03-31/functions/arn:aws:lambda:${stageVariables.AwsRegion}:${stageVariables.AwsAccountId}:function:${stageVariables.DropboxToSnsFunction}/invocations",
+          "uri": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.DropboxToSnsFunction}/invocations",
           "responses": {
             "default": {
               "statusCode": "200"
