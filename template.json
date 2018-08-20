@@ -118,10 +118,6 @@
         {
           "AttributeName": "id",
           "AttributeType": "S"
-        },
-        {
-          "AttributeName": "dropboxCursor",
-          "AttributeType": "S"
         }
       ],
       "KeySchema": [
@@ -133,6 +129,9 @@
       "ProvisionedThroughput": {
         "ReadCapacityUnits": 1,
         "WriteCapacityUnits": 1
+      },
+      "SSESpecification": {
+        "SSEEnabled": true
       }
     },
     "SnsTopic": {
