@@ -32,7 +32,7 @@ for index in ${!build_directories[*]}; do
   "${build_directories[$index]}/node_modules/.bin/tsc" -p "${build_directories[$index]}/tsconfig.json"
 
   # Package depedencies and compiled code for AWS Lambda
-  zip -r "${build_directories[$index]}/${zipfile}" "${build_directories[$index]}"
+  zip -q -r "${build_directories[$index]}/${zipfile}" "${build_directories[$index]}"
   unset zipfile
 done
 
