@@ -166,7 +166,21 @@
       "Type": "AWS::SNS::Topic"
     },
     "S3Bucket": {
-      "Type": "AWS::S3::Bucket"
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "NotificationConfiguration": {
+          "LambdaConfigurations": [
+            {
+              "Function": { "Ref": "CreateS3ToGitHubFunction" },
+              "Event": "s3:ObjectCreated:*"
+            },
+            {
+              "Function": { "Ref": "DeleteS3ToGitHubFunction" },
+              "Event": "s3:ObjectRemoved:*"
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {
