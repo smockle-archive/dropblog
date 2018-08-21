@@ -102,15 +102,6 @@
             "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
             "GITHUB_REPO": { "Ref": "GitHubRepo" }
           }
-        },
-        "Events": {
-          "CreateObjectS3Bucket": {
-            "Type": "S3",
-            "Properties": {
-              "Bucket": { "Ref": "S3Bucket" },
-              "Events": "s3:ObjectCreated:*"
-            }
-          }
         }
       }
     },
@@ -125,15 +116,6 @@
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
             "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
             "GITHUB_REPO": { "Ref": "GitHubRepo" }
-          }
-        },
-        "Events": {
-          "RemoveObjectS3Bucket": {
-            "Type": "S3",
-            "Properties": {
-              "Bucket": { "Ref": "S3Bucket" },
-              "Events": "s3:ObjectRemoved:*"
-            }
           }
         }
       }
@@ -173,14 +155,11 @@
             {
               "Function": { "Ref": "CreateS3ToGitHubFunction" },
               "Event": "s3:ObjectCreated:*"
-            },
-            {
-              "Function": { "Ref": "DeleteS3ToGitHubFunction" },
-              "Event": "s3:ObjectRemoved:*"
             }
           ]
         }
-      }
+      },
+      "DependsOn": ["CreateS3LambdaInvokePermission"]
     },
     "CreateS3LambdaInvokePermission": {
       "Type": "AWS::Lambda::Permission",
@@ -192,19 +171,8 @@
         "SourceArn": {
           "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
         }
-      }
-    },
-    "DeleteS3LambdaInvokePermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:invokeFunction",
-        "FunctionName": { "Fn::GetAtt": ["DeleteS3ToGitHubFunction", "Arn"] },
-        "Principal": "s3.amazonaws.com",
-        "SourceAccount": { "Ref": "AWS::AccountId" },
-        "SourceArn": {
-          "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
-        }
-      }
+      },
+      "DependsOn": ["CreateS3ToGitHubFunction"]
     }
   },
   "Outputs": {
