@@ -9,11 +9,11 @@
         "NotificationConfiguration": {
           "LambdaConfigurations": [
             {
-              "Function": { "Fn::GetAtt": ["CreateS3ToGitHubFunction", "Arn"] },
+              "Function": { "Ref": "CreateS3ToGitHubFunction" },
               "Event": "s3:ObjectCreated:*"
             },
             {
-              "Function": { "Fn::GetAtt": ["DeleteS3ToGitHubFunction", "Arn"] },
+              "Function": { "Ref": "DeleteS3ToGitHubFunction" },
               "Event": "s3:ObjectRemoved:*"
             }
           ]
