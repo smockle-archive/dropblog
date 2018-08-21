@@ -96,7 +96,6 @@
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Policies": "AWSLambdaExecute",
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
@@ -121,7 +120,6 @@
         "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Policies": "AWSLambdaExecute",
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
