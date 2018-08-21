@@ -9,7 +9,8 @@ before_install:
   - pip install --user awscli
   - pip install --user aws-sam-cli
 script:
-  - sam validate --template template.json
+  - sam validate --template stack-create.json
+  - sam validate --template stack-update.json
   - ./scripts/build.sh
 deploy:
   provider: script
