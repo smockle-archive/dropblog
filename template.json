@@ -181,29 +181,29 @@
           ]
         }
       }
-    }
-  },
-  "CreateS3LambdaInvokePermission": {
-    "Type": "AWS::Lambda::Permission",
-    "Properties": {
-      "Action": "lambda:invokeFunction",
-      "FunctionName": { "Fn::GetAtt": ["CreateS3ToGitHubFunction", "Arn"] },
-      "Principal": "s3.amazonaws.com",
-      "SourceAccount": { "Ref": "AWS::AccountId" },
-      "SourceArn": {
-        "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
+    },
+    "CreateS3LambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": { "Fn::GetAtt": ["CreateS3ToGitHubFunction", "Arn"] },
+        "Principal": "s3.amazonaws.com",
+        "SourceAccount": { "Ref": "AWS::AccountId" },
+        "SourceArn": {
+          "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
+        }
       }
-    }
-  },
-  "DeleteS3LambdaInvokePermission": {
-    "Type": "AWS::Lambda::Permission",
-    "Properties": {
-      "Action": "lambda:invokeFunction",
-      "FunctionName": { "Fn::GetAtt": ["DeleteS3ToGitHubFunction", "Arn"] },
-      "Principal": "s3.amazonaws.com",
-      "SourceAccount": { "Ref": "AWS::AccountId" },
-      "SourceArn": {
-        "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
+    },
+    "DeleteS3LambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": { "Fn::GetAtt": ["DeleteS3ToGitHubFunction", "Arn"] },
+        "Principal": "s3.amazonaws.com",
+        "SourceAccount": { "Ref": "AWS::AccountId" },
+        "SourceArn": {
+          "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
+        }
       }
     }
   },
