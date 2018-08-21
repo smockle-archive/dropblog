@@ -1,0 +1,180 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Dropblog: Syncs Markdown files from Dropbox to GitHub",
+  "Parameters": {
+    "AwsS3BucketName": {
+      "Type": "String"
+    },
+    "DropboxAppSecret": {
+      "Type": "String"
+    },
+    "DropboxUserId": {
+      "Type": "String"
+    },
+    "DropboxUserToken": {
+      "Type": "String"
+    },
+    "GitHubToken": {
+      "Type": "String"
+    },
+    "GitHubUsername": {
+      "Type": "String"
+    },
+    "GitHubRepo": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "ApiGatewayApi": {
+      "Type": "AWS::Serverless::Api",
+      "Properties": {
+        "StageName": "Prod",
+        "DefinitionBody": {
+          "Fn::Transform": {
+            "Name": "AWS::Include",
+            "Parameters": {
+              "Location": {
+                "Fn::Sub": "s3://${AwsS3BucketName}/swagger.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "DropboxToSnsFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "dropbox-to-sns/dropbox-to-sns.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "AWS_SNS_TOPIC_ARN": { "Ref": "SnsTopic" },
+            "DROPBOX_APP_SECRET": { "Ref": "DropboxAppSecret" }
+          }
+        },
+        "Events": {
+          "ApiGatewayApi": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "post"
+            }
+          }
+        }
+      }
+    },
+    "SnsToS3Function": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "sns-to-s3/sns-to-s3.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "AWS_DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
+            "AWS_S3_BUCKET_NAME": { "Ref": "S3Bucket" },
+            "AWS_SNS_TOPIC_ARN": { "Ref": "SnsTopic" },
+            "DROPBOX_USER_ID": { "Ref": "DropboxUserId" },
+            "DROPBOX_USER_TOKEN": { "Ref": "DropboxUserToken" }
+          }
+        },
+        "Events": {
+          "PublishSnsTopic": {
+            "Type": "SNS",
+            "Properties": {
+              "Topic": { "Ref": "SnsTopic" }
+            }
+          }
+        }
+      }
+    },
+    "CreateS3ToGitHubFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "GITHUB_TOKEN": { "Ref": "GitHubToken" },
+            "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
+            "GITHUB_REPO": { "Ref": "GitHubRepo" }
+          }
+        },
+        "Events": {
+          "CreateObjectS3Bucket": {
+            "Type": "S3",
+            "Properties": {
+              "Bucket": { "Ref": "S3Bucket" },
+              "Events": "s3:ObjectCreated:*"
+            }
+          }
+        }
+      }
+    },
+    "DeleteS3ToGitHubFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
+        "Handler": "index.handler",
+        "Runtime": "nodejs8.10",
+        "Environment": {
+          "Variables": {
+            "GITHUB_TOKEN": { "Ref": "GitHubToken" },
+            "GITHUB_USERNAME": { "Ref": "GitHubUsername" },
+            "GITHUB_REPO": { "Ref": "GitHubRepo" }
+          }
+        },
+        "Events": {
+          "RemoveObjectS3Bucket": {
+            "Type": "S3",
+            "Properties": {
+              "Bucket": { "Ref": "S3Bucket" },
+              "Events": "s3:ObjectRemoved:*"
+            }
+          }
+        }
+      }
+    },
+    "DynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "SSESpecification": {
+          "SSEEnabled": true
+        }
+      }
+    },
+    "SnsTopic": {
+      "Type": "AWS::SNS::Topic"
+    },
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket"
+    }
+  },
+  "Outputs": {
+    "ApiGatewayApi": {
+      "Description": "API Gateway endpoint URL for Prod stage",
+      "Value": {
+        "Fn::Sub": "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
+    }
+  }
+}
