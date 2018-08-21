@@ -158,8 +158,7 @@
             }
           ]
         }
-      },
-      "DependsOn": ["CreateS3LambdaInvokePermission"]
+      }
     },
     "CreateS3LambdaInvokePermission": {
       "Type": "AWS::Lambda::Permission",
@@ -171,8 +170,7 @@
         "SourceArn": {
           "Fn::Join": [":", ["arn", "aws", "s3", "", "", { "Ref": "S3Bucket" }]]
         }
-      },
-      "DependsOn": ["CreateS3ToGitHubFunction"]
+      }
     }
   },
   "Outputs": {
