@@ -29,5 +29,5 @@ sam deploy --template-file stack-create.packaged.yaml \
                GitHubUsername="$GITHUB_USERNAME" \
                GitHubRepo="$GITHUB_REPO" \
            --stack-name dropblog
-aws cloudformation update-stack --template-url "https://s3.amazonaws.com/$AWS_S3_BUCKET_NAME/stack-update.packaged.yaml" \
-                                --stack-name dropblog
+sam deploy --template-file stack-update.packaged.yaml \
+           --stack-name dropblog
