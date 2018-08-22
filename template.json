@@ -140,10 +140,28 @@
     },
     "CreateS3ToGitHubFunction": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["S3Bucket"],
       "Properties": {
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
+        "Policies": [
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:PutObject",
+                  "s3:GetObject",
+                  "s3:ListAllMyBuckets",
+                  "s3:ListBucket"
+                ],
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
+              }
+            ]
+          }
+        ],
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
