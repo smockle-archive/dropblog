@@ -140,7 +140,6 @@
     },
     "CreateS3ToGitHubFunction": {
       "Type": "AWS::Serverless::Function",
-      "DependsOn": ["S3Bucket"],
       "Properties": {
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
