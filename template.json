@@ -109,7 +109,10 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
+                "Resource": [
+                  { "Fn::Sub": "arn:aws:s3:::/${S3Bucket}" },
+                  { "Fn::Sub": "arn:aws:s3:::/${S3Bucket}/*" }
+                ]
               },
               {
                 "Effect": "Allow",
