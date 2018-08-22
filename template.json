@@ -55,7 +55,7 @@
               {
                 "Effect": "Allow",
                 "Action": ["sns:Publish"],
-                "Resource": { "Fn::Sub": "arn:aws:sns:::*" }
+                "Resource": { "Ref": "SnsTopic" }
               }
             ]
           }
@@ -96,7 +96,7 @@
                   "dynamodb:GetItem",
                   "dynamodb:UpdateItem"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:dynamodb:::*" }
+                "Resource": { "Fn::GetAtt": ["DynamoDBTable", "Arn"] }
               },
               {
                 "Effect": "Allow",
@@ -107,12 +107,12 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:s3:::*" }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               },
               {
                 "Effect": "Allow",
                 "Action": ["sns:GetTopicAttributes", "sns:ListTopics"],
-                "Resource": { "Fn::Sub": "arn:aws:sns:::*" }
+                "Resource": { "Ref": "SnsTopic" }
               }
             ]
           }
@@ -154,7 +154,7 @@
                   "s3:ListAllMyBuckets",
                   "s3:ListBucket"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:s3:::*" }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
@@ -194,7 +194,7 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:s3:::*" }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
