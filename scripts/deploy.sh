@@ -10,15 +10,12 @@ set -o pipefail
 aws s3 cp ./swagger.json "s3://$AWS_S3_BUCKET_NAME/"
 
 # Create CloudFormation templates
-sam package --template-file template-pre.json \
+sam package --template-file template.json \
             --s3-bucket "$AWS_S3_BUCKET_NAME" \
-            --output-template-file packaged-pre.yaml
-sam package --template-file template-post.json \
-            --s3-bucket "$AWS_S3_BUCKET_NAME" \
-            --output-template-file packaged-post.yaml
+            --output-template-file packaged.yaml
 
 # Create (or update) CloudFormation stack
-sam deploy --template-file packaged-pre.yaml \
+sam deploy --template-file packaged.yaml \
            --capabilities CAPABILITY_IAM \
            --parameter-overrides \
                AwsS3BucketName="$AWS_S3_BUCKET_NAME" \
@@ -28,7 +25,4 @@ sam deploy --template-file packaged-pre.yaml \
                GitHubToken="$GITHUB_TOKEN" \
                GitHubUsername="$GITHUB_USERNAME" \
                GitHubRepo="$GITHUB_REPO" \
-           --stack-name dropblog
-sam deploy --template-file packaged-post.yaml \
-           --capabilities CAPABILITY_IAM \
            --stack-name dropblog
