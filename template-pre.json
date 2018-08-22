@@ -156,9 +156,7 @@
                   "s3:ListAllMyBuckets",
                   "s3:ListBucket"
                 ],
-                "Resource": {
-                  "Fn::Sub": "arn:aws:s3:::*"
-                }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
@@ -198,9 +196,7 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": {
-                  "Fn::Sub": "arn:aws:s3:::*"
-                }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
@@ -244,26 +240,6 @@
     },
     "S3Bucket": {
       "Type": "AWS::S3::Bucket"
-    },
-    "CreateS3LambdaInvokePermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:invokeFunction",
-        "FunctionName": { "Ref": "CreateS3ToGitHubFunction" },
-        "Principal": "s3.amazonaws.com",
-        "SourceAccount": { "Ref": "AWS::AccountId" },
-        "SourceArn": { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" }
-      }
-    },
-    "DeleteS3LambdaInvokePermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:invokeFunction",
-        "FunctionName": { "Ref": "DeleteS3ToGitHubFunction" },
-        "Principal": "s3.amazonaws.com",
-        "SourceAccount": { "Ref": "AWS::AccountId" },
-        "SourceArn": { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" }
-      }
     }
   },
   "Outputs": {
@@ -271,6 +247,25 @@
       "Description": "API Gateway endpoint URL for Prod stage",
       "Value": {
         "Fn::Sub": "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
+    },
+    "S3BucketArn": {
+      "Description": "ARN for 'S3Bucket' resource",
+      "Value": { "Fn::GetAtt": ["S3Bucket", "Arn"] },
+      "Export": { "Name": { "Fn::Sub": "${AWS::StackName}-S3BucketArn" } }
+    },
+    "CreateS3ToGitHubFunctionName": {
+      "Description": "Name of the 'CreateS3ToGitHubFunction' resource",
+      "Value": { "Ref": "CreateS3ToGitHubFunction" },
+      "Export": {
+        "Name": { "Fn::Sub": "${AWS::StackName}-CreateS3ToGitHubFunctionName" }
+      }
+    },
+    "DeleteS3ToGitHubFunctionName": {
+      "Description": "Name of the 'DeleteS3ToGitHubFunction' resource",
+      "Value": { "Ref": "DeleteS3ToGitHubFunction" },
+      "Export": {
+        "Name": { "Fn::Sub": "${AWS::StackName}-DeleteS3ToGitHubFunctionName" }
       }
     }
   }
