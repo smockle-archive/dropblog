@@ -220,12 +220,10 @@
     "DynamoDBTable": {
       "Type": "AWS::Serverless::SimpleTable",
       "Properties": {
-        "PrimaryKey": [
-          {
-            "Name": "id",
-            "Type": "String"
-          }
-        ],
+        "PrimaryKey": {
+          "Name": "id",
+          "Type": "String"
+        },
         "ProvisionedThroughput": {
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
