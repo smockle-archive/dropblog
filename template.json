@@ -144,7 +144,7 @@
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Role": { "Fn:GetAtt": ["CreateS3Role", "Arn"] },
+        "Role": { "Fn::GetAtt": ["CreateS3Role", "Arn"] },
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
