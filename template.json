@@ -144,7 +144,25 @@
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Role": { "Fn::GetAtt": ["CreateS3Role", "Arn"] },
+        "Policies": [
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:PutObject",
+                  "s3:GetObject",
+                  "s3:ListAllMyBuckets",
+                  "s3:ListBucket"
+                ],
+                "Resource": {
+                  "Fn::Sub": "arn:aws:s3::${AWS::AccountId}:*"
+                }
+              }
+            ]
+          }
+        ],
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
@@ -180,7 +198,9 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": "*"
+                "Resource": {
+                  "Fn::Sub": "arn:aws:s3::${AWS::AccountId}:*"
+                }
               }
             ]
           }
@@ -224,40 +244,6 @@
     },
     "S3Bucket": {
       "Type": "AWS::S3::Bucket"
-    },
-    "CreateS3Role": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": ["lambda.amazonaws.com"]
-              },
-              "Action": ["sts:AssumeRole"]
-            }
-          ]
-        },
-        "Policies": [
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "s3:PutObject",
-                  "s3:GetObject",
-                  "s3:ListAllMyBuckets",
-                  "s3:ListBucket"
-                ],
-                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
-              }
-            ]
-          }
-        ]
-      }
     },
     "CreateS3LambdaInvokePermission": {
       "Type": "AWS::Lambda::Permission",
