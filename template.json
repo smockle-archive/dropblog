@@ -185,6 +185,22 @@
         "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
+        "Policies": [
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:ListAllMyBuckets",
+                  "s3:ListBucket",
+                  "s3:DeleteObject"
+                ],
+                "Resource": "*"
+              }
+            ]
+          }
+        ],
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
