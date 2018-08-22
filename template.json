@@ -44,6 +44,7 @@
     },
     "DropboxToSnsFunction": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["SnsTopic"],
       "Properties": {
         "CodeUri": "dropbox-to-sns/dropbox-to-sns.zip",
         "Handler": "index.handler",
@@ -80,6 +81,7 @@
     },
     "SnsToS3Function": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["SnsTopic", "DynamoDBTable"],
       "Properties": {
         "CodeUri": "sns-to-s3/sns-to-s3.zip",
         "Handler": "index.handler",
@@ -138,6 +140,7 @@
     },
     "CreateS3ToGitHubFunction": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["S3Bucket"],
       "Properties": {
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
@@ -179,6 +182,7 @@
     },
     "DeleteS3ToGitHubFunction": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["S3Bucket"],
       "Properties": {
         "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
         "Handler": "index.handler",
