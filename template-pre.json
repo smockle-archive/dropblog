@@ -156,7 +156,7 @@
                   "s3:ListAllMyBuckets",
                   "s3:ListBucket"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
@@ -196,7 +196,7 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" }
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
               }
             ]
           }
