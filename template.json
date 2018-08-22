@@ -110,8 +110,8 @@
                   "s3:DeleteObject"
                 ],
                 "Resource": [
-                  { "Fn::Sub": "arn:aws:s3:::/${S3Bucket}" },
-                  { "Fn::Sub": "arn:aws:s3:::/${S3Bucket}/*" }
+                  { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" },
+                  { "Fn::Sub": "arn:aws:s3:::${S3Bucket}/*" }
                 ]
               },
               {
