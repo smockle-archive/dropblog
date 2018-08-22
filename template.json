@@ -44,6 +44,7 @@
     },
     "DropboxToSnsFunction": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["SnsTopic"],
       "Properties": {
         "CodeUri": "dropbox-to-sns/dropbox-to-sns.zip",
         "Handler": "index.handler",
@@ -84,39 +85,6 @@
         "CodeUri": "sns-to-s3/sns-to-s3.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Policies": [
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "dynamodb:PutItem",
-                  "dynamodb:ListTables",
-                  "dynamodb:GetItem",
-                  "dynamodb:UpdateItem"
-                ],
-                "Resource": { "Fn::GetAtt": ["DynamoDBTable", "Arn"] }
-              },
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "s3:PutObject",
-                  "s3:GetObject",
-                  "s3:ListAllMyBuckets",
-                  "s3:ListBucket",
-                  "s3:DeleteObject"
-                ],
-                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
-              },
-              {
-                "Effect": "Allow",
-                "Action": ["sns:GetTopicAttributes", "sns:ListTopics"],
-                "Resource": { "Ref": "SnsTopic" }
-              }
-            ]
-          }
-        ],
         "Environment": {
           "Variables": {
             "AWS_DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
@@ -142,23 +110,6 @@
         "CodeUri": "create-s3-to-github/create-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Policies": [
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "s3:PutObject",
-                  "s3:GetObject",
-                  "s3:ListAllMyBuckets",
-                  "s3:ListBucket"
-                ],
-                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
-              }
-            ]
-          }
-        ],
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
@@ -183,22 +134,6 @@
         "CodeUri": "delete-s3-to-github/delete-s3-to-github.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
-        "Policies": [
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "s3:ListAllMyBuckets",
-                  "s3:ListBucket",
-                  "s3:DeleteObject"
-                ],
-                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
-              }
-            ]
-          }
-        ],
         "Environment": {
           "Variables": {
             "GITHUB_TOKEN": { "Ref": "GitHubToken" },
