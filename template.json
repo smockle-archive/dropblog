@@ -81,10 +81,44 @@
     },
     "SnsToS3Function": {
       "Type": "AWS::Serverless::Function",
+      "DependsOn": ["DynamoDBTable", "S3Bucket", "SnsTopic"],
       "Properties": {
         "CodeUri": "sns-to-s3/sns-to-s3.zip",
         "Handler": "index.handler",
         "Runtime": "nodejs8.10",
+        "Policies": [
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "dynamodb:PutItem",
+                  "dynamodb:ListTables",
+                  "dynamodb:GetItem",
+                  "dynamodb:UpdateItem"
+                ],
+                "Resource": { "Fn::GetAtt": ["DynamoDBTable", "Arn"] }
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:PutObject",
+                  "s3:GetObject",
+                  "s3:ListAllMyBuckets",
+                  "s3:ListBucket",
+                  "s3:DeleteObject"
+                ],
+                "Resource": { "Fn::GetAtt": ["S3Bucket", "Arn"] }
+              },
+              {
+                "Effect": "Allow",
+                "Action": ["sns:GetTopicAttributes", "sns:ListTopics"],
+                "Resource": { "Ref": "SnsTopic" }
+              }
+            ]
+          }
+        ],
         "Environment": {
           "Variables": {
             "AWS_DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
