@@ -157,7 +157,7 @@
                   "s3:ListBucket"
                 ],
                 "Resource": {
-                  "Fn::Sub": "arn:aws:s3:${AWS::Region}:${AWS::AccountId}:*"
+                  "Fn::Sub": "arn:aws:s3::${AWS::AccountId}:*"
                 }
               }
             ]
@@ -199,7 +199,7 @@
                   "s3:DeleteObject"
                 ],
                 "Resource": {
-                  "Fn::Sub": "arn:aws:s3:${AWS::Region}:${AWS::AccountId}:*"
+                  "Fn::Sub": "arn:aws:s3::${AWS::AccountId}:*"
                 }
               }
             ]
