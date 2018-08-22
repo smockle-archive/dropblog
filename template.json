@@ -156,7 +156,9 @@
                   "s3:ListAllMyBuckets",
                   "s3:ListBucket"
                 ],
-                "Resource": "*"
+                "Resource": {
+                  "Fn::Sub": "arn:aws:s3:${AWS::Region}:${AWS::AccountId}:*"
+                }
               }
             ]
           }
@@ -196,7 +198,9 @@
                   "s3:ListBucket",
                   "s3:DeleteObject"
                 ],
-                "Resource": "*"
+                "Resource": {
+                  "Fn::Sub": "arn:aws:s3:${AWS::Region}:${AWS::AccountId}:*"
+                }
               }
             ]
           }
