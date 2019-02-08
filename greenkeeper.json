@@ -1,16 +1,24 @@
 {
   "groups": {
     "create-s3-to-github": {
-      "packages": ["create-s3-to-github/package.json"]
+      "packages": [
+        "create-s3-to-github/package.json"
+      ]
     },
     "delete-s3-to-github": {
-      "packages": ["delete-s3-to-github/package.json"]
+      "packages": [
+        "delete-s3-to-github/package.json"
+      ]
     },
     "dropbox-to-sns": {
-      "packages": ["dropbox-to-sns/package.json"]
+      "packages": [
+        "dropbox-to-sns/package.json"
+      ]
     },
     "sns-to-s3": {
-      "packages": ["sns-to-s3/package.json"]
+      "packages": [
+        "sns-to-s3/package.json"
+      ]
     }
   }
 }
