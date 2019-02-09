@@ -12,11 +12,11 @@
   "author": "Clay Miller <clay@smockle.com> (https://www.smockle.com/)",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^10.3.6",
+    "@types/node": "^10.12.24",
     "typescript": "^3.3.3"
   },
   "dependencies": {
     "@octokit/rest": "^16.15.0",
-    "aws-sdk": "^2.265.1"
+    "aws-sdk": "^2.400.0"
   }
 }
