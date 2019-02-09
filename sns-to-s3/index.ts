@@ -21,6 +21,7 @@ type SNSMessage = {
 type SNSEvent = {
   Records: SNSMessage[];
 };
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export const handler = async (event: SNSEvent) => {
   // Verify environment
@@ -87,7 +88,10 @@ export const handler = async (event: SNSEvent) => {
           listFolderResult
         )}'`
       );
-      for (const entry of listFolderResult.entries) {
+      for (const _entry of listFolderResult.entries) {
+        const entry: Omit<typeof _entry, "path_lower"> & {
+          path_lower?: string;
+        } = _entry;
         // Ignore folders, and non-markdown files
         if (
           entry[".tag"] === "folder" ||
