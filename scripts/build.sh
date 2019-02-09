@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Abort if any command (incl. in pipeline) exits with error
-set -e
-set -o pipefail
+set -eo pipefail
 
 # List of build directories
 declare -a build_directories=(
@@ -33,7 +32,7 @@ for index in ${!build_directories[*]}; do
 
   # Package depedencies and compiled code for AWS Lambda
   pushd "${build_directories[$index]}" >/dev/null
-  zip -q -r "${zipfile}" *
+  zip -q -r "${zipfile}" ./*
   popd >/dev/null
   unset zipfile
 done
