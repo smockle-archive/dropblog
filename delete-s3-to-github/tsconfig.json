@@ -7,5 +7,5 @@
     "removeComments": true,
     "lib": ["dom", "es2015"]
   },
-  "files": ["index.ts"]
+  "files": ["index.ts", "typings/octokit.d.ts"]
 }
