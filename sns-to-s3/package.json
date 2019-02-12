@@ -12,7 +12,7 @@
   "author": "Clay Miller <clay@smockle.com> (https://www.smockle.com/)",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^10.12.24",
+    "@types/node": "^11.9.1",
     "typescript": "^3.3.3"
   },
   "dependencies": {
